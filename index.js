@@ -134,6 +134,7 @@ function scrollMobile() {
     const screenCenter = window.innerHeight / 2;
     const cardsproj = document.querySelectorAll('.card.projeto');
     const cards = document.querySelectorAll('.card:not(.projeto)');
+    const btns = document.querySelectorAll('.btn');
 
     cardsproj.forEach(card => {
         const rect = card.getBoundingClientRect();
@@ -159,12 +160,25 @@ function scrollMobile() {
             card.classList.remove('active');
         }
     });
+    btns.forEach(btn => {
+        const rect = btn.getBoundingClientRect();
+        const cardCenter = rect.top + rect.height / 2;
+
+        const distance = Math.abs(screenCenter - cardCenter);
+
+        if (distance < 50) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
 }
 
 function handleMobileEffects() {
     const isMobile = window.matchMedia("(max-width: 768px)").matches;
     const cardsproj = document.querySelectorAll('.card.projeto');
     const cards = document.querySelectorAll('.card:not(.projeto)');
+    const btns = document.querySelectorAll('.btn');
 
     if (isMobile) {
         window.addEventListener('scroll', scrollMobile);
@@ -172,8 +186,74 @@ function handleMobileEffects() {
         window.removeEventListener('scroll', scrollMobile);
         cardsproj.forEach(card => card.classList.remove('active'));
         cards.forEach(card => card.classList.remove('active'));
+        btns.forEach(btn => btn.classList.remove('active'));
     }
 }
 
 handleMobileEffects();
 window.addEventListener('resize', handleMobileEffects);
+
+// const hamburger = document.getElementById("hamburger");
+// const mobileMenu = document.getElementById("mobileMenu");
+
+// hamburger.addEventListener("click", () => {
+//     mobileMenu.classList.toggle("active");
+// });
+
+const toggle = document.getElementById('menu-toggle');
+const overlay = document.getElementById('menu-overlay');
+const nav = document.getElementById('nav');
+
+// abrir e fechar menu
+toggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    nav.classList.toggle('active');
+    overlay.classList.toggle('active');
+});
+
+// fechar ao clicar em link
+document.querySelectorAll('#nav a').forEach(link => {
+    link.addEventListener('click', () => {
+        nav.classList.remove('active');
+        overlay.classList.remove('active');
+    });
+});
+
+// fechar clicando fora
+document.addEventListener('click', (e) => {
+    const isClickInsideNav = nav.contains(e.target);
+    const isClickToggle = toggle.contains(e.target);
+
+    if (!isClickInsideNav && !isClickToggle) {
+        nav.classList.remove('active');
+        overlay.classList.remove('active');
+    }
+});
+
+// fechar com ESC
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        nav.classList.remove('active');
+        overlay.classList.remove('active');
+    }
+});
+// fechar clicando no overlay
+
+overlay.addEventListener('click', () => {
+    nav.classList.remove('active');
+    overlay.classList.remove('active');
+});
+
+// esconder quando menu abrir (opcional)
+// const navTop = document.getElementById('nav');
+
+// const observer = new MutationObserver(() => {
+
+//     if (navTop.classList.contains('active')) {
+//         backToTop.style.opacity = '0';
+//     } else {
+//         backToTop.style.opacity = '';
+//     }
+// });
+
+// observer.observe(navTop, { attributes: true });
